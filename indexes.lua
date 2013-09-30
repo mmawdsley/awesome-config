@@ -1,0 +1,3 @@
+ssh = {
+  key = "username@hostname",
+}

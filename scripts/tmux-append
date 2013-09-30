@@ -1,0 +1,103 @@
+#!/usr/bin/env python
+
+import getopt
+import os
+import pipes
+import sys
+
+class Tmux_Append:
+  def __init__ (self):
+    """Sets up the attributes."""
+    self.session = "main"       # Session name
+    self.command = None         # Command to run
+    self.default_path = None    # Default path
+    self.new_path = None        # New path
+    self.window_name = None     # Window name
+    self.attach_session = None  # Whether to attach to the session or create it
+
+  def main (self, argv):
+    """Constructor."""
+    self.default_path = os.getenv ("HOME")
+    self.setup (argv)
+    self.run ()
+
+  def setup (self, argv):
+    """Gets the command-line options."""
+    options = None              # List of command line options
+    arguments = None            # List of arguments
+    option = None               # Command line option
+    argument = None             # Command line argument
+
+    try:
+      options, arguments = getopt.getopt (argv, "s:c:p:n:", ["session=", "command=", "path=", "name="])
+    except getopt.GetoptError:
+      sys.exit ("Could not get options")
+
+    if not options:
+      sys.exit ("No options given")
+
+    for option, argument in options:
+      if option in ("-s", "--session"):
+        self.session = argument
+
+      if option in ("-c", "--command"):
+        self.command = argument
+
+      if option in ("-p", "--path"):
+        self.new_path = argument
+
+      if option in ("-n", "--name"):
+        self.window_name = argument
+
+  def run (self):
+    """Runs the command."""
+    args = []                   # List of tmux arguments
+    tmux_command = None         # Tmux command
+    window_command = None       # new-window command
+    command = None              # Final command
+
+    self.check_session ()
+
+    if self.attach_session:
+      args.append ("attach-session -t %s" % pipes.quote (self.session))
+    else:
+      args.append ("new-session -s %s" % pipes.quote (self.session))
+
+    args.append ("set-option aggressive-resize off")
+
+    if (self.new_path):
+      args.append ("set-option default-path %s" % pipes.quote (self.new_path))
+
+    window_command = "new-window"
+
+    if (self.window_name):
+      window_command += " -n %s" % self.window_name
+
+    if (self.command):
+      window_command += " " + pipes.quote (self.command)
+
+    args.append (window_command)
+
+    if (self.new_path):
+      args.append ("set-option default-path %s" % pipes.quote (self.default_path))
+
+    args.append ("detach-client")
+
+    tmux_command = "tmux %s" % " \; ".join (args)
+    command = "urxvt -name urxvt-temp -e %s" % tmux_command
+
+    os.system (command)
+
+  def check_session (self):
+    """Checks whether the selected session already exists."""
+    command = None              # Command to run
+
+    command = "tmux -q has-session -t %s" % pipes.quote (self.session)
+
+    if os.system (command) == 0:
+      self.attach_session = True
+    else:
+      self.attach_session = False
+
+if __name__ == "__main__":
+  Tmux_Append ().main (sys.argv[1:])
