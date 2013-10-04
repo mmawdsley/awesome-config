@@ -5,6 +5,7 @@ import os
 import subprocess
 import sys
 import ConfigParser
+from threading import Thread
 
 class Volume ():
 
@@ -18,6 +19,8 @@ class Volume ():
     self.min_volume = 0
     self.max_volume = 100
     self.pactl = "/usr/bin/pactl"
+    self.osd_thread = None
+    self.awesome_thread = None
 
 
   def main (self):
@@ -53,8 +56,17 @@ class Volume ():
 
     self.save_config ()
     self.apply ()
-    self.awesome ()
+
+    self.display ()
     self.print_status ()
+    self.wait ()
+
+
+  def wait (self):
+    """Waits for the threads to close and then returns"""
+
+    self.awesome_thread.join ()
+    self.osd_thread.join ()
 
 
   def load_config (self):
@@ -120,10 +132,41 @@ class Volume ():
   def run (self, command):
     """Runs a pactl command"""
 
-    os.system ("%s -- %s" % (self.pactl, command))
+    subprocess.call ("%s -- %s" % (self.pactl, command), shell=True)
 
 
-  def awesome (self):
+  def display (self):
+    """Displays the current status"""
+
+    self.osd_thread = Thread (None, self.display_osd, None, ())
+    self.awesome_thread = Thread (None, self.display_awesome, None, ())
+
+    self.osd_thread.start ()
+    self.awesome_thread.start ()
+
+
+  def display_osd (self):
+    """Displays the current status in the on-screen display"""
+
+    message = "%s%%" % self.volume
+
+    if self.mute == True:
+      message += " (mute)"
+
+    osd_command = (
+      'aosd_cat --fore-color="#dfe2e8" --back-color="#000000" -p 7'
+      ' --x-offset=520 --y-offset=-50 --font="bitstream bold 20"'
+      ' --transparency=0 --fade-in=0 --fade-out=0 --padding 10'
+    )
+
+    p1 = subprocess.Popen (['echo', message], stdout=subprocess.PIPE)
+    p2 = subprocess.Popen ([osd_command], stdin=p1.stdout, shell=True)
+
+    p1.stdout.close ()
+    p2.communicate ()
+
+
+  def display_awesome (self):
     """Informs the awesome widget of the status"""
 
     mute = "true" if self.mute else "false"
