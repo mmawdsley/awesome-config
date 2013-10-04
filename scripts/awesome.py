@@ -10,7 +10,7 @@ class Awesome:
   def __init__ (self):
 
     self.awesome_bin = "/usr/bin/awesome"
-    self.startup_command = "startup()"
+    self.startup_command = "config.startup()"
     self.startup_delay = 5
 
 

@@ -8,7 +8,12 @@ module ("lasttag")
 
 --- Updates the tag history
 function update ()
+
   local selected = tagger.selected (capi.mouse.screen)
+
+  if selected == current_tag then
+    return
+  end
 
   last_tag = current_tag
   current_tag = selected

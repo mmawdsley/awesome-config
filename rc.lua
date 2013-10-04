@@ -73,7 +73,7 @@ volumewidget.update = function () os.execute ("volume &") end
 volumewidget.callback = function (volume, mute, name)
 
   volumewidget.iconwidget.image = image (awful.util.getdir ("config") .. "/icons/" .. name .. ".png")
-                          
+
   if mute == true then
     volumewidget.textwidget.text = ' <span color="#666666">' .. volume .. '%</span> '
   else
@@ -887,7 +887,7 @@ globalkeys = awful.util.table.join(
                 function (number)
                   if number then
                     awful.util.spawn("openrss " .. number)
-                  end 
+                  end
                 end,
                 nil,
                 nil
@@ -1068,19 +1068,44 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 
 -- }}}
 
-function startup ()
+config = {}
+config.run = {}
+config.run.startup = {
+  "nitrogen --restore",
+  "urxvtq",
+  "dropbox start",
+  "blueman-applet",
+  "update-notifier",
+  "xset s off",
+  "xset -dpms",
+}
 
-  io.popen ("nitrogen --restore &")
-  io.popen ("urxvtq &")
-  io.popen ("dropbox start &")
-  io.popen ("blueman-applet &")
-  io.popen ("update-notifier &")
-  io.popen ("xset s off -dpms &")
+if hostname == "daedalus" then
+  table.insert (config.run.startup, "wicd-gtk --tray")
+else
+  table.insert (config.run.startup, "nm-applet")
+end
 
-  if hostname == "daedalus" then
-    io.popen ("wicd-gtk --tray &")
-  else
-    io.popen ("nm-applet &")
+config.run.restart = {
+  "xset s off",
+  "xset -dpms",
+  "nitrogen --restore",
+}
+
+config.startup = function ()
+
+  for i = 1, table.getn (config.run.startup) do
+    io.popen (config.run.startup[i] .. " &")
   end
 
 end
+
+config.restart = function ()
+
+  for i = 1, table.getn (config.run.restart) do
+    io.popen (config.run.restart[i] .. " &")
+  end
+
+end
+
+config.restart ()
