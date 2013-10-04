@@ -94,16 +94,19 @@ if hostname == "shodan" then
 end
 
 batterywidget = {}
-batterywidget.widget = nil
+batterywidget.textwidget = nil
+batterywidget.iconwidget = nil
 
 if hostname == "daedalus" then
 
   volumewidget.update ()
 
-  batterywidget.widget = widget ({type = 'imagebox', name = 'batterywidget-image'})
+  batterywidget.textwidget = widget ({type = 'textbox', name = 'batterywidget-text'})
+  batterywidget.iconwidget = widget ({type = 'imagebox', name = 'batterywidget-image'})
   batterywidget.update = function () os.execute ("battery-status update &") end
-  batterywidget.callback = function (name)
-    batterywidget.widget.image = image (awful.util.getdir ("config") .. "/icons/" .. name .. ".png")
+  batterywidget.callback = function (percent, name)
+    batterywidget.iconwidget.image = image (awful.util.getdir ("config") .. "/icons/" .. name .. ".png")
+    batterywidget.textwidget.text = percent .. "% "
   end
 
   batterywidget.timer = timer ({ timeout = 60 })
@@ -661,7 +664,8 @@ for s = 1, screen.count() do
     rsscountwidget.iconwidget,
     volumewidget.textwidget,
     volumewidget.iconwidget,
-    batterywidget.widget,
+    batterywidget.textwidget,
+    batterywidget.iconwidget,
     pkg,
     s == 1 and mysystray or nil,
     mytasklist[s],

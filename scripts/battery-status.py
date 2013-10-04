@@ -40,7 +40,10 @@ class Battery_Status:
   def update_awesome (self):
     """Sends the current status to awesome"""
 
-    command = 'batterywidget.callback ("%s")' % self.get_battery_icon ()
+    charge = self.get_charge ()
+    icon = self.get_battery_icon ()
+
+    command = 'batterywidget.callback (%d, "%s")' % (charge, icon)
 
     p1 = subprocess.Popen (["echo", command], stdout=subprocess.PIPE)
     p2 = subprocess.Popen (["awesome-client"], stdin=p1.stdout)
