@@ -25,7 +25,8 @@ class Volume_Config (object):
       "max_volume" : 100,
       "volume_adjustment" : 5,
       "show_for" : 4000,
-      "pactl_bin" : "/usr/bin/pactl"
+      "pactl_bin" : "/usr/bin/pactl",
+      "icon_dir" : ""
     }
 
     config = ConfigParser.ConfigParser ()
@@ -35,7 +36,7 @@ class Volume_Config (object):
       return False
 
     int_options = ["sink", "volume", "socket_port", "min_volume", "max_volume", "volume_adjustment", "show_for"]
-    str_options = ["socket_address", "pactl_bin"]
+    str_options = ["socket_address", "pactl_bin", "icon_dir"]
     bool_options = ["mute"]
 
     for option in int_options:

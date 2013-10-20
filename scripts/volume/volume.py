@@ -80,10 +80,14 @@ class Volume_Notification ():
   def update_osd (self):
     """Updates and shows the notification"""
 
-    icon = "/home/mmawdsley/Documents/git/awesome/icons/%s.png" % self.get_icon ()
-
-    self._notification.update ("Volume", "%d%%" % self.config.volume, icon)
+    self._notification.update ("Volume", "%d%%" % self.config.volume, self.get_icon_path ())
     self._notification.show ()
+
+
+  def get_icon_path (self):
+    """Returns the full path of the icon"""
+
+    return "%s/%s.png" % (self.config.icon_dir, self.get_icon ())
 
 
   def get_icon (self):
