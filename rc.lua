@@ -1078,21 +1078,19 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 config = {}
 config.run = {}
 config.run.startup = {
-  "nitrogen --restore",
-  "urxvtq",
-  "dropbox start",
-  "blueman-applet",
-  "update-notifier",
+  "nitrogen --restore &",
+  "urxvtq &",
+  "dropbox start &",
+  "blueman-applet &",
+  "update-notifier &",
   "xset s off",
   "xset -dpms",
 }
 
 if hostname == "daedalus" then
-  table.insert (config.run.startup, "wicd-gtk --tray")
-  table.insert (config.run.startup, "xmodmap /home/mmawdsley/.config/awesome/xmodmap.daedalus")
-  table.insert (config.run.startup, "xmodmap /home/mmawdsley/.config/awesome/xmodmap.daedalus")
+  table.insert (config.run.startup, "wicd-gtk --tray &")
 else
-  table.insert (config.run.startup, "nm-applet")
+  table.insert (config.run.startup, "nm-applet &")
 end
 
 config.run.restart = {
@@ -1104,7 +1102,7 @@ config.run.restart = {
 config.startup = function ()
 
   for i = 1, table.getn (config.run.startup) do
-    io.popen (config.run.startup[i] .. " &")
+    io.popen (config.run.startup[i])
   end
 
 end
@@ -1112,7 +1110,7 @@ end
 config.restart = function ()
 
   for i = 1, table.getn (config.run.restart) do
-    io.popen (config.run.restart[i] .. " &")
+    io.popen (config.run.restart[i])
   end
 
 end
