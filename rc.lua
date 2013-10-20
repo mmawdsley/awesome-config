@@ -69,7 +69,7 @@ end
 volumewidget = {}
 volumewidget.iconwidget = widget ({ type = 'imagebox', name = 'volume-icon-widget' })
 volumewidget.textwidget = widget ({type = 'textbox', name = 'volumewidget'})
-volumewidget.update = function () os.execute ("volume &") end
+volumewidget.start = function () os.execute ("volume_notification &") end
 volumewidget.callback = function (volume, mute, name)
 
   volumewidget.iconwidget.image = image (awful.util.getdir ("config") .. "/icons/" .. name .. ".png")
@@ -89,7 +89,7 @@ if hostname == "shodan" then
   rsscountwidget.timer:start ()
   rsscountwidget.update ()
 
-  volumewidget.update ()
+  volumewidget.start ()
 
 end
 
@@ -99,7 +99,7 @@ batterywidget.iconwidget = nil
 
 if hostname == "daedalus" then
 
-  volumewidget.update ()
+  volumewidget.start ()
 
   batterywidget.textwidget = widget ({type = 'textbox', name = 'batterywidget-text'})
   batterywidget.iconwidget = widget ({type = 'imagebox', name = 'batterywidget-image'})
@@ -783,6 +783,9 @@ globalkeys = awful.util.table.join(
   awful.key({ },         "XF86AudioRaiseVolume", function () awful.util.spawn("volume up &") end),
   awful.key({ },         "XF86AudioMute", function () awful.util.spawn("volume mute &") end),
 
+  awful.key({ }, "XF86MonBrightnessUp", function () awful.util.spawn("brightness &") end),
+  awful.key({ }, "XF86MonBrightnessDown", function () awful.util.spawn("brightness &") end),
+  
   awful.key({ modkey, "Mod1", }, "Return", function () awful.util.spawn(terminal) end),
 
   -- Shifty: keybindings specific to shifty
@@ -1086,6 +1089,8 @@ config.run.startup = {
 
 if hostname == "daedalus" then
   table.insert (config.run.startup, "wicd-gtk --tray")
+  table.insert (config.run.startup, "xmodmap /home/mmawdsley/.config/awesome/xmodmap.daedalus")
+  table.insert (config.run.startup, "xmodmap /home/mmawdsley/.config/awesome/xmodmap.daedalus")
 else
   table.insert (config.run.startup, "nm-applet")
 end

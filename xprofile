@@ -1,4 +1,0 @@
-#!/bin/sh
-
-xmodmap /home/mmawdsley/.config/awesome/xmodmap
-xmodmap /home/mmawdsley/.config/awesome/xmodmap

@@ -1,0 +1,14 @@
+[main]
+
+hostname = hostname
+port = 993
+username = username
+password = supersecretpassword
+
+[rss]
+
+mailbox = INBOX.RSS
+
+[unread]
+
+mailboxes = INBOX, INBOX.RSS, INBOX.Work

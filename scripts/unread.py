@@ -4,25 +4,22 @@ import imaplib
 import re
 import subprocess
 import sys
+import mailconfig
 
-HOSTNAME = 'hostname'
-PORT = 993
-USERNAME = 'username'
-PASSWORD = 'password'
+config = mailconfig.Unread_Config ()
 
 unread = 0
-pattern = re.compile ('\(UNSEEN (\d+)\)$')
-mailboxes = ['INBOX', 'INBOX.Lists', 'INBOX.RSS', 'INBOX.Shopping', 'INBOX.Spam', 'INBOX.System']
+pattern = re.compile ("\(UNSEEN (\d+)\)$")
 
 try:
-  connection = imaplib.IMAP4_SSL (HOSTNAME, PORT)
+  connection = imaplib.IMAP4_SSL (config.hostname, config.port)
 except:
   sys.exit ()
 
-connection.login (USERNAME, PASSWORD)
+connection.login (config.username, config.password)
 
-for mailbox in mailboxes:
-  status, counts = connection.status (mailbox, '(UNSEEN)')
+for mailbox in config.mailboxes:
+  status, counts = connection.status (mailbox, "(UNSEEN)")
   search = pattern.search (counts[0])
 
   if not search:
@@ -32,10 +29,10 @@ for mailbox in mailboxes:
 
 connection.logout ()
 
-command = 'newmailwidget.callback (%d)' % unread
+command = "newmailwidget.callback (%d)" % unread
 
-p1 = subprocess.Popen (['echo', command], stdout=subprocess.PIPE)
-p2 = subprocess.Popen (['awesome-client'], stdin=p1.stdout)
+p1 = subprocess.Popen (["echo", command], stdout=subprocess.PIPE)
+p2 = subprocess.Popen (["awesome-client"], stdin=p1.stdout)
 
 p1.stdout.close ()
 p2.communicate ()
