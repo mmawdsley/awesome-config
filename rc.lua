@@ -689,19 +689,7 @@ root.buttons(awful.util.table.join(
 
 -- Indexed SSH usernames/hosts
 local indexes = require ("indexes")
-
---- Returns the keys from a list
--- @param tw list
--- @return tw
-function table_get_keys (list)
-  local values = {}
-
-  for k, v in pairs (list) do
-    table.insert(values, k)
-  end
-
-  return values
-end
+indexes.load ("ssh", homedir .. "/.config/awesome/indexes/ssh.lua")
 
 --- Finds the first open terminal and returns it
 function get_terminal ()
@@ -876,12 +864,12 @@ globalkeys = awful.util.table.join(
                 { prompt = "SSH: " },
                 mypromptbox[mouse.screen].widget,
                 function (key)
-                  if indexes.ssh[key] then
-                    awful.util.spawn("tmux-append --command 'ssh " .. indexes.ssh[key] .. "' --name '@" .. key .. "'")
+                  if indexes.get_value ("ssh", key) then
+                    awful.util.spawn("tmux-append --command 'ssh " .. indexes.get_value ("ssh", key) .. "' --name '@" .. key .. "'")
                   end
                 end,
                 function (text, cur_pos, ncomp)
-                  return awful.completion.generic(text, cur_pos, ncomp, table_get_keys(indexes.ssh))
+                  return awful.completion.generic(text, cur_pos, ncomp, indexes.get_keys ("ssh"))
                 end,
                 awful.util.getdir("cache") .. "/history_ssh")
           end),
