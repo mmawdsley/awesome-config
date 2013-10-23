@@ -82,14 +82,14 @@ volumewidget.callback = function (volume, mute, name)
 
 end
 
+volumewidget.start ()
+
 if hostname == "shodan" then
 
   rsscountwidget.timer = timer ({ timeout = 60 })
   rsscountwidget.timer:add_signal ("timeout", function () rsscountwidget.update () end)
   rsscountwidget.timer:start ()
   rsscountwidget.update ()
-
-  volumewidget.start ()
 
 end
 
@@ -98,8 +98,6 @@ batterywidget.textwidget = nil
 batterywidget.iconwidget = nil
 
 if hostname == "daedalus" then
-
-  volumewidget.start ()
 
   batterywidget.textwidget = widget ({type = 'textbox', name = 'batterywidget-text'})
   batterywidget.iconwidget = widget ({type = 'imagebox', name = 'batterywidget-image'})
@@ -655,18 +653,18 @@ for s = 1, screen.count() do
     },
     mylayoutbox[s],
     mytextclock,
-    thermal,
-    cpuwidget,
-    memwidget,
-    newmailwidget.textwidget,
-    newmailwidget.iconwidget,
-    rsscountwidget.textwidget,
-    rsscountwidget.iconwidget,
-    volumewidget.textwidget,
-    volumewidget.iconwidget,
-    batterywidget.textwidget,
-    batterywidget.iconwidget,
-    pkg,
+    s == 1 and thermal or nil,
+    s == 1 and cpuwidget or nil,
+    s == 1 and memwidget or nil,
+    s == 1 and newmailwidget.textwidget or nil,
+    s == 1 and newmailwidget.iconwidget or nil,
+    s == 1 and rsscountwidget.textwidget or nil,
+    s == 1 and rsscountwidget.iconwidget or nil,
+    s == 1 and volumewidget.textwidget or nil,
+    s == 1 and volumewidget.iconwidget or nil,
+    s == 1 and batterywidget.textwidget or nil,
+    s == 1 and batterywidget.iconwidget or nil,
+    s == 1 and pkg or nil,
     s == 1 and mysystray or nil,
     mytasklist[s],
     layout = awful.widget.layout.horizontal.rightleft
