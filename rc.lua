@@ -1024,6 +1024,8 @@ awful.rules.rules = {
                    focus = false,
                    keys = clientkeys,
                    buttons = clientbuttons } },
+  { rule = { class = "Steam" },
+    properties = { border_width = 0, floating = true} },
   { rule = { class = "pinentry" },
     properties = { floating = true } },
     callback = awful.placement.centered,
