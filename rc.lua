@@ -864,6 +864,8 @@ globalkeys = awful.util.table.join(
                 function (key)
                   if indexes.get_value ("ssh", key) then
                     awful.util.spawn("tmux-append --command 'ssh " .. indexes.get_value ("ssh", key) .. "' --name '@" .. key .. "'")
+                  else
+                    naughty.notify({ text = "No option found for " .. key })
                   end
                 end,
                 function (text, cur_pos, ncomp)
