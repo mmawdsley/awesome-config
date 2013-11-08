@@ -1,0 +1,6 @@
+[main]
+file = /sys/class/backlight/acpi_video0/brightness
+socket_address = localhost
+socket_port = 8081
+show_for = 4000
+icon = ~/Documents/git/awesome/scripts/brightness/icon.png
