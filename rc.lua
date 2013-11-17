@@ -113,6 +113,12 @@ if hostname == "daedalus" then
 
   batterywidget.update ()
 
+  batterymonitor = {}
+  batterymonitor.run = function () os.execute ("/usr/bin/setlock -n " .. homedir .. "/.battery-status-lock battery-status suspend-if-needed &") end
+  batterymonitor.timer = timer ({ timeout = 60 })
+  batterymonitor.timer:add_signal ("timeout", function () batterymonitor.run () end)
+  batterymonitor.timer:start ()
+
 end
 
 thermal = widget({ type = "textbox" })
