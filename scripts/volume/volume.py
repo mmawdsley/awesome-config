@@ -143,6 +143,9 @@ class Volume_Notification ():
     elif command == "down":
       self.adjust_volume (self.config.volume_adjustment * -1)
 
+    elif command == "awesome":
+      self.update_awesome ()
+
 
   def _signal_handler (self, signum, frame):
     """Handles SIGINIT and SIGTERM signals"""
@@ -210,15 +213,8 @@ class Volume_Notification ():
 
     if command == "close":
       clientsock.close ()
-
-    elif command == "up":
-      self.adjust_volume (self.config.volume_adjustment)
-
-    elif command == "down":
-      self.adjust_volume (self.config.volume_adjustment * -1)
-
-    elif command == "mute":
-      self.toggle_mute ()
+    else:
+      self._run_command (command)
 
 
   def _apply (self):
