@@ -1081,7 +1081,7 @@ config.run.startup = {
   "update-notifier &",
   "xset s off",
   "xset -dpms",
-  "volume_notification awesome",
+  "volume_notification awesome &",
 }
 
 if hostname == "daedalus" then
@@ -1094,7 +1094,7 @@ config.run.restart = {
   "xset s off",
   "xset -dpms",
   "nitrogen --restore",
-  "volume_notification awesome",
+  "volume_notification awesome &",
 }
 
 config.startup = function ()
