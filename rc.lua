@@ -69,7 +69,7 @@ end
 volumewidget = {}
 volumewidget.iconwidget = widget ({ type = 'imagebox', name = 'volume-icon-widget' })
 volumewidget.textwidget = widget ({type = 'textbox', name = 'volumewidget'})
-volumewidget.start = function () os.execute ("volume_notification &") end
+volumewidget.start = function () os.execute ("volume_notification awesome &") end
 volumewidget.callback = function (volume, mute, name)
 
   volumewidget.iconwidget.image = image (awful.util.getdir ("config") .. "/icons/" .. name .. ".png")
@@ -1081,7 +1081,6 @@ config.run.startup = {
   "update-notifier &",
   "xset s off",
   "xset -dpms",
-  "volume_notification awesome &",
 }
 
 if hostname == "daedalus" then
@@ -1094,7 +1093,6 @@ config.run.restart = {
   "xset s off",
   "xset -dpms",
   "nitrogen --restore",
-  "volume_notification awesome &",
 }
 
 config.startup = function ()
