@@ -1074,13 +1074,10 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 config = {}
 config.run = {}
 config.run.startup = {
-  "nitrogen --restore &",
   "urxvtq &",
   "dropbox start &",
   "blueman-applet &",
   "update-notifier &",
-  "xset s off",
-  "xset -dpms",
 }
 
 if hostname == "daedalus" then
