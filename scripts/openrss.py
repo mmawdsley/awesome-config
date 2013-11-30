@@ -23,14 +23,13 @@ class Open_Rss:
   def main (self):
     """Class constructor."""
 
+    try:
+      self.limit = int (sys.argv[1])
+    except (IndexError, ValueError):
+      pass
+
     if not self.connect ():
       sys.exit ("Connection failed")
-
-    try:
-      if type (sys.argv[1] is int):
-        self.limit = int (sys.argv[1])
-    except:
-      pass
 
     self.open_urls ()
     self.disconnect ()
