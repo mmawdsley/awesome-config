@@ -1077,7 +1077,6 @@ config.run.startup = {
   "urxvtq &",
   "dropbox start &",
   "blueman-applet &",
-  "update-notifier &",
 }
 
 if hostname == "daedalus" then
