@@ -1079,6 +1079,10 @@ config.run.startup = {
   "blueman-applet &",
 }
 
+if hostname == "mmawdsley-desktop" then
+  table.insert (config.run.startup, "pidgin &")
+end
+
 if hostname == "daedalus" then
   table.insert (config.run.startup, "wicd-gtk --tray &")
 else
