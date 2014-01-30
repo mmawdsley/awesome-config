@@ -1,30 +1,43 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import getopt
 import email
 import imaplib
 import mailconfig
+import os
 import re
 import subprocess
 import sys
 
+class Rss_Item:
+
+  def __init__ (self, id, url):
+    """Constructor"""
+
+    self.id = id
+    self.url = url
+
+
 class Open_Rss:
+
   def __init__ (self):
-    """Initialises the class attributes."""
+    """Constructor"""
 
     self.config = mailconfig.RSS_Config ()       # Configuration class
     self.connection = None                       # IMAP connection
     self.browser = "/usr/bin/google-chrome"      # Browser execuable
     self.browser_args = []                       # List of browser arguments
     self.url_pattern = re.compile ("URL: (.+)$") # Regexp for matching the URL
-    self.limit = None                            # Number of emails to open
+    self.max = None                              # Number of emails to open
+    self.limit = 20             # Maximum number to open in one go
 
 
   def main (self):
     """Class constructor."""
 
     try:
-      self.limit = int (sys.argv[1])
+      self.max = int (sys.argv[1])
     except (IndexError, ValueError):
       pass
 
@@ -59,11 +72,13 @@ class Open_Rss:
     num = None                  # Message number
     msg = None                  # Message contents
     url = None                  # Item URL
-    urls = {}                   # List of URLs indexed by number
+    urls = []                   # List of URLs indexed by number
+    chunks = None
+    chunk = None
 
     for num in self.get_messages ():
 
-      if self.limit and self.limit == len (urls):
+      if self.max and self.max == len (urls):
         break
 
       msg = self.get_message (num)
@@ -78,15 +93,34 @@ class Open_Rss:
         print "Could not find URL in message %s" % num
         continue
 
-      urls[num] = url
+      urls.append (Rss_Item (num, url))
 
     if len (urls) == 0:
       return
 
-    cmd = [self.browser] + self.browser_args + urls.values ()
+    if sys.stdout.isatty ():
+
+      chunks = [urls[x:x + self.limit] for x in xrange (0, len (urls), self.limit)]
+
+      while chunks:
+        self.open_messages (chunks.pop (0))
+
+        if chunks and raw_input ("Continue? [y/n] ") != "y":
+          break
+
+    else:
+
+      self.open_messages (urls)
+
+
+  def open_messages (self, messages):
+
+    urls = map (lambda x:x.url, messages)
+    ids = map (lambda x:x.id, messages)
+    cmd = [self.browser] + self.browser_args + urls
 
     if subprocess.call (cmd) == 0:
-      self.delete_messages (urls.keys ())
+      self.delete_messages (ids)
 
 
   def get_messages (self):
