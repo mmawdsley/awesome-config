@@ -8,6 +8,14 @@ import re
 import subprocess
 import sys
 
+class Rss_Item:
+
+  def __init__ (self, uid, url):
+
+    self.uid = uid
+    self.url = url
+
+
 class Open_Rss:
   def __init__ (self):
     """Initialises the class attributes."""
@@ -18,6 +26,8 @@ class Open_Rss:
     self.browser_args = []                       # List of browser arguments
     self.url_pattern = re.compile ("URL: (.+)$") # Regexp for matching the URL
     self.limit = None                            # Number of emails to open
+    self.max = 10                                # Emails to open per page
+    self.items = []                           # List of messages
 
 
   def main (self):
@@ -28,11 +38,20 @@ class Open_Rss:
     except (IndexError, ValueError):
       pass
 
-    if not self.connect ():
-      sys.exit ("Connection failed")
+    self.get_messages ()
 
-    self.open_urls ()
-    self.disconnect ()
+    if sys.stdout.isatty ():
+      pages = [self.items[x:x+self.max] for x in xrange (0, len (self.items), self.max)]
+    else:
+      pages = [self.items]
+
+    while len (pages) > 0:
+
+      page = pages.pop (0)
+      self.open_messages (page)
+
+      if sys.stdout.isatty () and len (pages) > 0 and raw_input ("Continue? [y/n] ") != "y":
+        break
 
 
   def connect (self):
@@ -44,72 +63,73 @@ class Open_Rss:
       self.connection = imaplib.IMAP4_SSL (self.config.hostname)
       self.connection.login (self.config.username, self.config.password)
     except:
-      return False
+      raise Exception ("Connection failed")
 
     type, data = self.connection.select (self.config.mailbox, False)
 
-    if type == "OK":
-      return True
-
-    return False
+    if type != "OK":
+      raise Exception ("Connection failed")
 
 
-  def open_urls (self):
+  def open_messages (self, messages):
     """Opens the feed items."""
-    num = None                  # Message number
-    msg = None                  # Message contents
-    url = None                  # Item URL
-    urls = {}                   # List of URLs indexed by number
+    uids = None                 # List of UIDs
+    urls = None                 # List of URLs
+    cmd = None                  # Command to run
 
-    for num in self.get_messages ():
-
-      if self.limit and self.limit == len (urls):
-        break
-
-      msg = self.get_message (num)
-
-      if not msg:
-        print "Could not parse message %s" % num
-        continue
-
-      url = self.get_url (msg)
-
-      if not url:
-        print "Could not find URL in message %s" % num
-        continue
-
-      urls[num] = url
-
-    if len (urls) == 0:
-      return
-
-    cmd = [self.browser] + self.browser_args + urls.values ()
+    uids = [x.uid for x in messages]
+    urls = [x.url for x in messages]
+    cmd = [self.browser] + self.browser_args + urls
 
     if subprocess.call (cmd) == 0:
-      self.delete_messages (urls.keys ())
+      self.delete_messages (uids)
 
 
   def get_messages (self):
-    """Returns the messages in the selected mailbox."""
+    """Fetches the messages in the selected mailbox."""
     type = None                 # Return value
     data = None                 # Search data
 
-    type, data = self.connection.search (None, "(UNDELETED) (SEEN)")
+    self.items = []
 
-    if type != "OK":
-      print "Could not search mailbox"
-      return []
+    try:
+      self.connect ()
+    except:
+      return
 
-    return data[0].split ()
+    type, data = self.connection.uid ("SEARCH", None, "(UNDELETED) (SEEN)")
+
+    if type == "OK":
+
+      for uid in data[0].split ():
+
+        msg = self.get_message (uid)
+
+        if msg:
+          url = self.get_url (msg)
+
+          if url:
+            self.items.append (Rss_Item (uid, url))
+          else:
+            print "Could not find URL in message %s" % uid
+
+        else:
+          print "Could not parse message %s" % uid
 
 
-  def get_message (self, num):
+    self.disconnect ()
+
+    if self.limit:
+      del self.items[self.limit:]
+
+
+  def get_message (self, uid):
     """Returns the message section of an email."""
     type = None                 # Return value
     items = None                # List of items
     item = None                 # Item
 
-    type, items = self.connection.fetch (num, "(RFC822)")
+    type, items = self.connection.uid ("FETCH", uid, "(RFC822)")
 
     if type != "OK":
       return False
@@ -135,15 +155,23 @@ class Open_Rss:
       return False
 
 
-  def delete_messages (self, nums):
+  def delete_messages (self, uids):
     """Marks the given messages for deletion."""
 
-    for num in nums:
-      self.connection.store (num, "+FLAGS", "\\Deleted")
+    try:
+      self.connect ()
+    except:
+      return
+
+    for uid in uids:
+      self.connection.uid ("STORE", uid, "+FLAGS", "(\Deleted)")
+
+    self.disconnect ()
 
 
   def disconnect (self):
     """Disconnects from the IMAP server."""
+
     self.connection.logout ()
 
 
