@@ -17,6 +17,7 @@ class Rss_Item:
 
 
 class Open_Rss:
+
   def __init__ (self):
     """Initialises the class attributes."""
 
@@ -56,6 +57,7 @@ class Open_Rss:
 
   def connect (self):
     """Connects to the IMAP server and opens the mailbox."""
+
     type = None                 # Return value
     data = None                 # Connection data
 
@@ -68,11 +70,12 @@ class Open_Rss:
     type, data = self.connection.select (self.config.mailbox, False)
 
     if type != "OK":
-      raise Exception ("Connection failed")
+      raise Exception ("Could not select mailbox")
 
 
   def open_messages (self, messages):
     """Opens the feed items."""
+
     uids = None                 # List of UIDs
     urls = None                 # List of URLs
     cmd = None                  # Command to run
@@ -87,6 +90,7 @@ class Open_Rss:
 
   def get_messages (self):
     """Fetches the messages in the selected mailbox."""
+
     type = None                 # Return value
     data = None                 # Search data
 
