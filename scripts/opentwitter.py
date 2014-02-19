@@ -5,5 +5,5 @@ from openunread import Open_Unread
 import mailconfig
 
 if __name__ == "__main__":
-  config = mailconfig.RSS_Config ()
+  config = mailconfig.Twitter_Config ()
   Open_Unread (config).open ()

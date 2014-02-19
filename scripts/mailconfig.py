@@ -73,6 +73,29 @@ class RSS_Config (Mail_Config):
       pass
 
 
+class Twitter_Config (Mail_Config):
+
+  def __init__ (self):
+
+    super (Twitter_Config, self).__init__ ()
+
+
+  def read_config (self):
+    """Fetches the configuration values from disk"""
+
+    super (Twitter_Config, self).read_config ()
+
+    self.config["mailbox"] = None
+
+    if self.config_parser.has_section ("twitter") == False:
+      return
+
+    try:
+      self.config["mailbox"] = self.config_parser.get ("twitter", "mailbox")
+    except:
+      pass
+
+
 class Unread_Config (Mail_Config):
 
   def __init__ (self):

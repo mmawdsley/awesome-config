@@ -9,6 +9,10 @@ password = supersecretpassword
 
 mailbox = INBOX.RSS
 
+[twitter]
+
+mailbox = INBOX.Twitter
+
 [unread]
 
 mailboxes = INBOX, INBOX.RSS, INBOX.Work
