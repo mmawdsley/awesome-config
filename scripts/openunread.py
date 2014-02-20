@@ -97,7 +97,8 @@ class Open_Unread:
 
     try:
       self.connect ()
-    except:
+    except Exception as e:
+      print "Exception: %s" % e
       return
 
     type, data = self.connection.uid ("SEARCH", None, "(UNDELETED) (SEEN)")
@@ -163,7 +164,8 @@ class Open_Unread:
 
     try:
       self.connect ()
-    except:
+    except Exception as e:
+      print "Exception: %s" % e
       return
 
     for uid in uids:
