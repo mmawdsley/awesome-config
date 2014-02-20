@@ -66,7 +66,10 @@ class Open_Unread:
     except:
       raise Exception ("Connection failed")
 
-    type, data = self.connection.select (self.config.mailbox, False)
+    try:
+      type, data = self.connection.select (self.config.mailbox, False)
+    except Exception as e:
+      raise Exception ("Mailbox selection threw an exception: %s" % e)
 
     if type != "OK":
       raise Exception ("Could not select mailbox")
