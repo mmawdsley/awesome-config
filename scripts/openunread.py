@@ -40,6 +40,9 @@ class Open_Unread:
 
     self.get_messages ()
 
+    if len (self.items) == 0:
+      return
+
     if sys.stdout.isatty ():
       pages = [self.items[x:x+self.max] for x in xrange (0, len (self.items), self.max)]
 
