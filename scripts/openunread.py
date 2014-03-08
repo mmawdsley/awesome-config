@@ -46,7 +46,7 @@ class Open_Unread:
     if sys.stdout.isatty ():
       pages = [self.items[x:x+self.max] for x in xrange (0, len (self.items), self.max)]
 
-      if len (pages) > 2 and len (pages[-1]) < self.max / 2:
+      if len (pages) >= 2 and len (pages[-1]) <= self.max / 2:
         pages[-2] += pages[-1]
         del pages[-1]
 
