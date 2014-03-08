@@ -181,7 +181,7 @@ if screen.count() > 1 then
 
 -- Shifty configured tags.
 shifty.config.tags = {
-  ["1:sys"] = {
+  ["1"] = {
     layout    = awful.layout.suit.tile,
     mwfact    = 0.50,
     exclusive = false,
@@ -189,7 +189,7 @@ shifty.config.tags = {
     init      = true,
     screen    = 1,
   },
-  ["2:web"] = {
+  ["2"] = {
     layout    = awful.layout.suit.tile,
     exclusive   = false,
     position    = 2,
@@ -197,7 +197,7 @@ shifty.config.tags = {
     screen    = 2,
     init      = true,
   },
-  ["3:mail"] = {
+  ["3"] = {
     layout    = awful.layout.suit.tile,
     mwfact    = 0.45,
     exclusive = false,
@@ -205,7 +205,7 @@ shifty.config.tags = {
     screen    = 2,
     init      = true,
   },
-  ["4:media"] = {
+  ["4"] = {
     layout    = awful.layout.suit.floating,
     exclusive = false,
     position  = 4,
@@ -213,7 +213,7 @@ shifty.config.tags = {
     init      = true,
     screen    = 1,
   },
-  ["5:games"] = {
+  ["5"] = {
     layout    = awful.layout.suit.tile,
     exclusive = false,
     position = 5,
@@ -221,7 +221,7 @@ shifty.config.tags = {
     persist = true,
     init      = true,
   },
-  ["6:office"] = {
+  ["6"] = {
     layout    = awful.layout.suit.tile,
     exclusive = false,
     position = 6,
@@ -229,14 +229,14 @@ shifty.config.tags = {
     persist = true,
     init = true,
   },
-  ["8:keepass"] = {
+  ["8"] = {
     layout    = awful.layout.suit.tile,
     position = 8,
     screen = 1,
     persist = true,
     init      = true,
   },
-  ["9:term"] = {
+  ["9"] = {
     layout    = awful.layout.suit.tile,
     position = 9,
     screen = 1,
@@ -262,13 +262,13 @@ shifty.config.apps = {
     match = {
       class = { "^emacs$", "^Emacs[0-9]+$", "^Steam$", },
     },
-    tag = "1:sys",
+    tag = "1",
   },
   {
     match = {
       class = { "^emacs$", "^Emacs[0-9]+$", },
     },
-    tag = "1:sys",
+    tag = "1",
     honorsizehints = false,
   },
   {
@@ -281,40 +281,40 @@ shifty.config.apps = {
     match = {
       class = { "^Browser$", "^Firefox$", "^Navigator$", "Chromium", "Google%-chrome", },
     },
-    tag = "2:web",
+    tag = "2",
   },
   {
     match = {
       name = { "^Firefox Preferences$", "^Cookies$", "^Exceptions %- Cookies$", "^Downloads$", "^Remmina$", },
     },
     float = true,
-    tag = "2:web",
+    tag = "2",
   },
   {
     match = {
       class = { "^Mail$", "^Thunderbird$", },
     },
-    tag = "3:mail",
+    tag = "3",
   },
   {
     match = {
       name = { "^Thunderbird Preferences$", },
     },
     float = true,
-    tag = "3:mail",
+    tag = "3",
   },
   {
     match = {
       class = { "^gimp$", "^Gimp$", },
     },
-    tag = "1:sys",
+    tag = "1",
     -- float = true,
   },
   {
     match = {
       class = { "^URxvt$", },
     },
-    tag = "9:term",
+    tag = "9",
     honorsizehints = false,
   },
   {
@@ -328,27 +328,27 @@ shifty.config.apps = {
     match = {
       class = { "^Pidgin$", },
     },
-    tag = "1:sys",
+    tag = "1",
     float = true,
   },
   {
     match = {
       class = { "Steam", },
     },
-    tag = "5:games",
+    tag = "5",
     float = true,
   },
   {
     match = {
       class = { "^Keepassx$", },
     },
-    tag = "8:keepass",
+    tag = "8",
   },
   {
     match = {
       class = { "^libreoffice", },
     },
-    tag = "6:office",
+    tag = "6",
   },
   {
     match = {
@@ -362,7 +362,7 @@ else
 
 -- Shifty configured tags.
 shifty.config.tags = {
-  ["1:sys"] = {
+  ["1"] = {
     layout    = awful.layout.suit.tile,
     mwfact    = 0.50,
     exclusive = false,
@@ -370,49 +370,49 @@ shifty.config.tags = {
     init      = true,
     screen    = 1,
   },
-  ["2:web"] = {
+  ["2"] = {
     layout    = awful.layout.suit.tile,
     exclusive   = false,
     position    = 2,
     mwfact    = 0.65,
     init      = true,
   },
-  ["3:mail"] = {
+  ["3"] = {
     layout    = awful.layout.suit.tile,
     mwfact    = 0.45,
     exclusive = false,
     position  = 3,
     init      = true,
   },
-  ["4:media"] = {
+  ["4"] = {
     layout    = awful.layout.suit.floating,
     exclusive = false,
     position  = 4,
     persist = true,
     init      = true,
   },
-  ["5:games"] = {
+  ["5"] = {
     layout    = awful.layout.suit.tile,
     exclusive = false,
     position = 5,
     persist = true,
     init      = true,
   },
-  ["6:office"] = {
+  ["6"] = {
     layout    = awful.layout.suit.tile,
     exclusive = false,
     position = 6,
     persist = true,
     init      = true,
   },
-  ["8:keepass"] = {
+  ["8"] = {
     layout    = awful.layout.suit.tile,
     position = 8,
     screen = 1,
     persist = true,
     init      = true,
   },
-  ["9:term"] = {
+  ["9"] = {
     layout    = awful.layout.suit.tile,
     position = 9,
     init      = true,
@@ -437,7 +437,7 @@ shifty.config.apps = {
     match = {
       class = { "^emacs$", "^Emacs[0-9]+$", "^Steam$", },
     },
-    tag = "1:sys",
+    tag = "1",
   },
   {
     match = {
@@ -449,14 +449,14 @@ shifty.config.apps = {
     match = {
       class = { "^emacs$", "^Emacs[0-9]+$", },
     },
-    tag = "1:sys",
+    tag = "1",
     honorsizehints = false,
   },
   {
     match = {
       class = { "^Browser$", "^Firefox$", "^Navigator$", "Chromium", "Google%-chrome", },
     },
-    tag = "2:web",
+    tag = "2",
   },
   {
     match = {
@@ -468,20 +468,20 @@ shifty.config.apps = {
     match = {
       class = { "^Mail$", "^Thunderbird$", },
     },
-    tag = "3:mail",
+    tag = "3",
   },
   {
     match = {
       name = { "^Thunderbird Preferences$", },
     },
     float = true,
-    tag = "3:mail",
+    tag = "3",
   },
   {
     match = {
       class = { "^gimp$", "^Gimp$", },
     },
-    tag = "1:sys",
+    tag = "1",
     -- float = true,
   },
   -- {
@@ -489,19 +489,19 @@ shifty.config.apps = {
   --     class = { "^MPlayer$", "^Vlc$", },
   --   },
   --   float = true,
-  --   tag = "4:media",
+  --   tag = "4",
   -- },
   {
     match = {
       class = { "^libreoffice", },
     },
-    tag = "6:office",
+    tag = "6",
   },
   {
     match = {
       class = { "^URxvt$", },
     },
-    tag = "9:term",
+    tag = "9",
     honorsizehints = false,
   },
   {
@@ -515,21 +515,21 @@ shifty.config.apps = {
     match = {
       class = { "^Pidgin$", },
     },
-    tag = "1:sys",
+    tag = "1",
     float = true,
   },
   {
     match = {
       class = { "Steam", },
     },
-    tag = "5:games",
+    tag = "5",
     float = true,
   },
   {
     match = {
       class = { "^Keepassx$", },
     },
-    tag = "8:keepass",
+    tag = "8",
   },
   {
     match = {
