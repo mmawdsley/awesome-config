@@ -405,6 +405,13 @@ shifty.config.tags = {
     persist = true,
     init      = true,
   },
+  ["7"] = {
+    layout    = awful.layout.suit.tile,
+    exclusive = false,
+    position = 7,
+    persist = true,
+    init      = true,
+  },
   ["8"] = {
     layout    = awful.layout.suit.tile,
     position = 8,
