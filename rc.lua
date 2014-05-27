@@ -279,7 +279,7 @@ shifty.config.apps = {
   },
   {
     match = {
-      class = { "^Browser$", "^Firefox$", "^Navigator$", "Chromium", "Google%-chrome", },
+      class = { "^Browser$", "^Firefox$", "^Navigator$", "Chromium", "Google%-chrome", "Chromium%-browser", },
     },
     tag = "2",
   },
@@ -461,7 +461,7 @@ shifty.config.apps = {
   },
   {
     match = {
-      class = { "^Browser$", "^Firefox$", "^Navigator$", "Chromium", "Google%-chrome", },
+      class = { "^Browser$", "^Firefox$", "^Navigator$", "Chromium", "Google%-chrome", "Chromium%-browser", },
     },
     tag = "2",
   },
