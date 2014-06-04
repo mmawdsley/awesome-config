@@ -12,6 +12,7 @@
 
 -- get our key bindings from separate ror.lua file
 require("ror")
+require("naughty")
 
 local awful=awful
 local client=client
@@ -19,6 +20,7 @@ local pairs=pairs
 local table=table
 local allt1=ror.table5
 local print=print
+local naughty=naughty
 local USE_T = false
 --local USE_T = false
 module("aweror")
@@ -60,6 +62,7 @@ function run_or_raise(cmd, properties)
       c:raise()
       return
    end
+   naughty.notify({ text = "Starting " .. cmd .. "...", bg = "#3F3F3F", fg = "#DCDCCC" })
    awful.util.spawn(cmd)
 end
 
