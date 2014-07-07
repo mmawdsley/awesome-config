@@ -58,9 +58,21 @@ class Open_Unread:
       page = pages.pop (0)
       self.open_messages (page)
 
-      if sys.stdout.isatty () and len (pages) > 0 and raw_input ("Continue? [y/n] ") != "y":
+      if sys.stdout.isatty () and len (pages) > 0 and self.continue_to_next_page () == False:
         break
 
+
+  def continue_to_next_page (self):
+    """Returns true if we should continue to the next page and false if we should exit"""
+
+    while True:
+      response = raw_input ("Continue? [y/n] ")
+
+      if response == "y":
+        return True
+
+      if response == "n":
+        return False
 
   def connect (self):
     """Connects to the IMAP server and opens the mailbox."""
