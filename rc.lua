@@ -1081,14 +1081,9 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 config = {}
 config.run = {}
 config.run.startup = {
-  "urxvtq &",
   "dropbox start &",
   "blueman-applet &",
 }
-
-if hostname == "mmawdsley-desktop" then
-  table.insert (config.run.startup, "pidgin &")
-end
 
 if hostname == "daedalus" then
   table.insert (config.run.startup, "wicd-gtk --tray &")
