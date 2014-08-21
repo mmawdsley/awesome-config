@@ -1083,14 +1083,8 @@ config.run = {}
 config.run.startup = {
   "dropbox start &",
   "blueman-applet &",
+  "nm-applet &",
 }
-
-if hostname == "daedalus" then
-  table.insert (config.run.startup, "wicd-gtk --tray &")
-else
-  table.insert (config.run.startup, "nm-applet &")
-end
-
 config.run.restart = {
   "xset s off",
   "xset -dpms",
