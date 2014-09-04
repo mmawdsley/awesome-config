@@ -11,7 +11,7 @@
 module("ror")
 table5={
    ["F2"]={"emacs","Emacs"}, 
-   ["F3"]={"mychromium","Chromium-browser"}, 
+   ["F3"]={"mychrome","Google-chrome"}, 
    ["F4"]={"thunderbird","Thunderbird"},
    ["F5"]={"gimp","Gimp"},
    ["F9"]={"keepassx","Keepassx"}, 

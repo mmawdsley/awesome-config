@@ -22,7 +22,7 @@ class Open_Unread:
 
     self.config = config                         # Configuration class
     self.connection = None                       # IMAP connection
-    self.browser = "/usr/bin/chromium-browser"   # Browser execuable
+    self.browser = "/usr/bin/google-chrome"      # Browser execuable
     self.browser_args = []                       # List of browser arguments
     self.url_pattern = re.compile ("URL: (.+)$") # Regexp for matching the URL
     self.limit = None                            # Number of emails to open
