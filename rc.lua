@@ -470,6 +470,7 @@ shifty.config.apps = {
       name = { "^Firefox Preferences$", "^Cookies$", "^Exceptions %- Cookies$", "^Downloads$", "^Remmina$", },
     },
     float = true,
+    tag = "2",
   },
   {
     match = {
