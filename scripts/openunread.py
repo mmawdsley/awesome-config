@@ -22,8 +22,9 @@ class Open_Unread:
 
     self.config = config                         # Configuration class
     self.connection = None                       # IMAP connection
-    self.browser = "/usr/bin/google-chrome"      # Browser execuable
+    self.browser = "/usr/bin/firefox"            # Browser execuable
     self.browser_args = []                       # List of browser arguments
+    self.url_args = ["-new-tab"]                 # List of URL arguments
     self.url_pattern = re.compile ("URL: (.+)$") # Regexp for matching the URL
     self.limit = None                            # Number of emails to open
     self.max = 10                                # Emails to open per page
@@ -104,7 +105,10 @@ class Open_Unread:
 
     uids = [x.uid for x in messages]
     urls = [x.url for x in messages]
-    cmd = [self.browser] + self.browser_args + urls
+    cmd = [self.browser] + self.browser_args
+
+    for url in urls:
+      cmd += self.url_args + [url]
 
     if subprocess.call (cmd) == 0:
       self.delete_messages (uids)
