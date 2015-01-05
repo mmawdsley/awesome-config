@@ -24,7 +24,7 @@ class Open_Unread:
     self.connection = None                       # IMAP connection
     self.browser = "/usr/bin/firefox"            # Browser execuable
     self.browser_args = []                       # List of browser arguments
-    self.url_args = ["-new-tab"]                 # List of URL arguments
+    self.url_args = []                           # List of URL arguments
     self.url_pattern = re.compile ("URL: (.+)$") # Regexp for matching the URL
     self.limit = None                            # Number of emails to open
     self.max = 10                                # Emails to open per page
