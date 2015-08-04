@@ -148,7 +148,7 @@ require("debian.menu")
 beautiful.init(homedir .. '/.config/awesome/theme.lua')
 
 -- This is used later as the default terminal and editor to run.
-terminal = "urxvtq"
+terminal = "gnome-terminal"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -190,7 +190,7 @@ shifty.config.tags = {
     screen    = 1,
   },
   ["2"] = {
-    layout    = awful.layout.suit.tile,
+    layout    = awful.layout.suit.max,
     exclusive   = false,
     position    = 2,
     mwfact    = 0.65,
@@ -307,12 +307,18 @@ shifty.config.apps = {
     match = {
       class = { "^gimp$", "^Gimp$", },
     },
-    tag = "1",
+    tag = "4",
     -- float = true,
   },
   {
     match = {
-      class = { "^URxvt$", },
+      class = { "^hipchat$", "^HipChat$", },
+    },
+    tag = "5",
+  },
+  {
+    match = {
+      class = { "^Gnome%-terminal$", },
     },
     tag = "9",
     honorsizehints = false,
@@ -371,7 +377,7 @@ shifty.config.tags = {
     screen    = 1,
   },
   ["2"] = {
-    layout    = awful.layout.suit.tile,
+    layout    = awful.layout.suit.max,
     exclusive   = false,
     position    = 2,
     mwfact    = 0.65,
@@ -489,7 +495,7 @@ shifty.config.apps = {
     match = {
       class = { "^gimp$", "^Gimp$", },
     },
-    tag = "1",
+    tag = "4",
     -- float = true,
   },
   -- {
@@ -507,7 +513,7 @@ shifty.config.apps = {
   },
   {
     match = {
-      class = { "^URxvt$", },
+      class = { "^Gnome%-terminal$", },
     },
     tag = "9",
     honorsizehints = false,
@@ -710,7 +716,7 @@ function get_terminal ()
 
   for i, c in pairs(clients) do
 
-    if awful.rules.match(c, {class = "URxvt"}) then
+    if awful.rules.match(c, {class = "Gnome-terminal"}) then
       return c
     end
 
@@ -726,7 +732,7 @@ function toggle_terminal ()
   local sel = capi.client.focus
   local screen = mouse.screen
 
-  if sel and awful.rules.match(sel, {class = "URxvt"}) then
+  if sel and awful.rules.match(sel, {class = "Gnome-terminal"}) then
 
   else
 
@@ -734,7 +740,7 @@ function toggle_terminal ()
 
     if terminal == false then
 
-      awful.util.spawn("urxvtq")
+      awful.util.spawn("gnome-terminal")
 
     else
 
@@ -775,7 +781,7 @@ globalkeys = awful.util.table.join(
   awful.key({ modkey, }, "KP_Subtract", function () awful.util.spawn("volume down &") end),
   awful.key({ modkey, }, "KP_Multiply", function () awful.util.spawn("volume mute &") end),
 
-  awful.key({ modkey, }, "Return", toggle_terminal),
+  awful.key({ "Mod1", }, "Return", toggle_terminal),
   awful.key({ modkey, }, "Escape", awful.tag.history.restore),
   awful.key({ "Mod1", }, "grave", function () lasttag.viewlast() end),
   awful.key({ },         "Print", function () awful.util.spawn("scrot") end),
@@ -864,7 +870,7 @@ globalkeys = awful.util.table.join(
               awful.prompt.run(
                 { prompt = "Run in terminal: " },
                 mypromptbox[mouse.screen].widget,
-                function (...) awful.util.spawn (terminal .. " -t urxvt -e tmux-append " .. ...) end,
+                function (...) awful.util.spawn (terminal .. " -t gnome-terminal -e tmux-append " .. ...) end,
                 awful.completion.shell,
                 awful.util.getdir("cache") .. "/history")
             end
@@ -1061,6 +1067,7 @@ awful.rules.rules = {
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
 client.add_signal("manage", function (c, startup)
+    awful.titlebar.add(c)
     if not startup then
         -- Set the windows at the slave,
         -- i.e. put it at the end of others instead of setting it master.
@@ -1083,7 +1090,6 @@ config = {}
 config.run = {}
 config.run.startup = {
   "dropbox start &",
-  "blueman-applet &",
   "nm-applet &",
 }
 config.run.restart = {
@@ -1091,6 +1097,17 @@ config.run.restart = {
   "xset -dpms",
   "nitrogen --restore",
 }
+
+if hostname == "mmawdsley-desktop" then
+  awful.util.table.join(
+    config.run.startup,
+    {
+      "hipchat &",
+      "btsync-gui &",
+      "xmod &"
+    }
+  )
+end
 
 config.startup = function ()
 
