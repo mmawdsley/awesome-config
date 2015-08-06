@@ -1092,6 +1092,7 @@ config.run.startup = {
   "dropbox start &",
   "nm-applet &",
 }
+
 config.run.restart = {
   "xset s off",
   "xset -dpms",
@@ -1107,6 +1108,10 @@ if hostname == "mmawdsley-desktop" then
       "xmod &"
     }
   )
+end
+
+if hostname == "shodan" then
+  table.insert(config.run.startup, "xmod &")
 end
 
 config.startup = function ()

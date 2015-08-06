@@ -5,5 +5,7 @@ from openunread import Open_Unread
 import mailconfig
 
 if __name__ == "__main__":
-  config = mailconfig.Twitter_Config ()
-  Open_Unread (config).open ()
+    config = mailconfig.Twitter_Config()
+    openUnread = Open_Unread(config)
+    openUnread.max = 20
+    openUnread.open()
