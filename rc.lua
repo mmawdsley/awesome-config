@@ -279,7 +279,7 @@ shifty.config.apps = {
   },
   {
     match = {
-      class = { "^Browser$", "^Firefox$", "^Navigator$", "Chromium", "Google%-chrome", "Chromium%-browser", },
+      class = { "^Browser$", "^Firefox$", "^Navigator$", "Chromium", "google%-chrome", "Chromium%-browser", },
     },
     tag = "2",
   },
@@ -467,7 +467,7 @@ shifty.config.apps = {
   },
   {
     match = {
-      class = { "^Browser$", "^Firefox$", "^Navigator$", "Chromium", "Google%-chrome", "Chromium%-browser", },
+      class = { "^Browser$", "^Firefox$", "^Navigator$", "Chromium", "google%-chrome", "Chromium%-browser", },
     },
     tag = "2",
   },
@@ -610,9 +610,9 @@ mytaglist.buttons = awful.util.table.join(
   awful.button({ }, 1, awful.tag.viewonly),
   awful.button({ modkey }, 1, awful.client.movetotag),
   awful.button({ }, 3, awful.tag.viewtoggle),
-  awful.button({ modkey }, 3, awful.client.toggletag)
-  -- awful.button({ }, 4, awful.tag.viewnext),
-  -- awful.button({ }, 5, awful.tag.viewprev)
+  awful.button({ modkey }, 3, awful.client.toggletag),
+  awful.button({ }, 4, awful.tag.viewprev),
+  awful.button({ }, 5, awful.tag.viewnext)
 )
 mytasklist = {}
 mytasklist.buttons = awful.util.table.join(
@@ -1100,14 +1100,9 @@ config.run.restart = {
 }
 
 if hostname == "mmawdsley-desktop" then
-  awful.util.table.join(
-    config.run.startup,
-    {
-      "hipchat &",
-      "btsync-gui &",
-      "xmod &"
-    }
-  )
+  table.insert(config.run.startup, "hipchat &")
+  table.insert(config.run.startup, "btsync-gui &")
+  table.insert(config.run.startup, "xmod &")
 end
 
 if hostname == "shodan" then
