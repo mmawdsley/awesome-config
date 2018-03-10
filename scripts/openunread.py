@@ -31,6 +31,7 @@ class Open_Unread:
         self.limit = None                           # Number of emails to open
         self.max = 10                               # Emails to open per page
         self.items = []                             # List of messages
+        self.pages = None
 
 
     def open(self):
@@ -47,32 +48,39 @@ class Open_Unread:
             return
 
         if sys.stdout.isatty():
-            pages = [self.items[x:x+self.max] for x in xrange(0, len(self.items), self.max)]
+            self.pages = [self.items[x:x+self.max] for x in xrange(0, len(self.items), self.max)]
 
-            if len(pages) >= 2 and len(pages[-1]) <= self.max / 2:
-                pages[-2] += pages[-1]
+            if len(self.pages) >= 2 and len(self.pages[-1]) <= self.max / 2:
+                self.pages[-2] += self.pages[-1]
                 del pages[-1]
 
         else:
-            pages = [self.items]
+            self.pages = [self.items]
 
-        while len(pages) > 0:
+        while len(self.pages) > 0:
 
-            page = pages.pop(0)
+            page = self.pages.pop(0)
             self.open_messages(page)
 
-            if sys.stdout.isatty() and len(pages) > 0 and self.continue_to_next_page() == False:
+            if sys.stdout.isatty() and len(self.pages) > 0 and self.continue_to_next_page() == False:
                 break
 
-    @classmethod
-    def continue_to_next_page(cls):
+    def get_continue_prompt(self):
+        page_count = len(self.pages)
+
+        if page_count == 1:
+            return "%d page remains.  Continue? [y/n] " % page_count
+        else:
+            return "%d pages remain.  Continue? [y/n] " % page_count
+
+    def continue_to_next_page(self):
         """
         Returns true if we should continue to the next page and false if
         we should exit.
         """
 
         while True:
-            response = raw_input("Continue? [y/n] ")
+            response = raw_input(self.get_continue_prompt())
 
             if response == "y":
                 return True
