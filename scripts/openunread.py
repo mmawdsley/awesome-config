@@ -52,7 +52,7 @@ class Open_Unread:
 
             if len(self.pages) >= 2 and len(self.pages[-1]) <= self.max / 2:
                 self.pages[-2] += self.pages[-1]
-                del pages[-1]
+                del self.pages[-1]
 
         else:
             self.pages = [self.items]
