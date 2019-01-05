@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import ConfigParser
+import configparser
+import keyring
 import os
 
 class Mail_Config (object):
@@ -35,19 +36,23 @@ class Mail_Config (object):
       "password" : None
     }
 
-    self.config_parser = ConfigParser.ConfigParser ()
+    self.config_parser = configparser.ConfigParser ()
     self.config_parser.read (self.config_path)
 
     if self.config_parser.has_section ("main") == False:
-      return
+      raise Exception ("No [main] section defined")
 
     try:
       self.config["hostname"] = self.config_parser.get ("main", "hostname")
       self.config["port"] = self.config_parser.getint ("main", "port")
       self.config["username"] = self.config_parser.get ("main", "username")
-      self.config["password"] = self.config_parser.get ("main", "password")
-    except:
-      pass
+    except configparser.NoOptionError as err:
+      raise Exception ('Mail not configured "%s"' % err)
+
+    self.config["password"] = keyring.get_password ("mailconfig", "password")
+
+    if self.config["password"] is None:
+      raise Exception ("No password set for host %s" % self.config["hostname"])
 
 
 class RSS_Config (Mail_Config):
@@ -120,3 +125,6 @@ class Unread_Config (Mail_Config):
 
     except:
       pass
+
+if __name__ == "__main__":
+  print Unread_Config ().password
