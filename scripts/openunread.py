@@ -113,7 +113,7 @@ class Open_Unread:
             raise Exception("Mailbox selection threw an exception: %s" % e)
 
         if type != "OK":
-            raise Exception("Could not select mailbox")
+            raise Exception('Could not select mailbox "%s"' % self.config.mailbox)
 
 
     def open_messages(self, messages):
@@ -148,7 +148,7 @@ class Open_Unread:
             print "Exception: %s" % e
             return
 
-        type, data = self.connection.uid("SEARCH", None, "(UNDELETED) (SEEN)")
+        type, data = self.connection.uid("SEARCH", None, "(UNDELETED) (UNSEEN)")
 
         if type == "OK":
 
@@ -186,10 +186,8 @@ class Open_Unread:
             return False
 
         for item in items:
-            if not isinstance(item, tuple):
-                continue
-
-            return email.message_from_string(item[1]).get_payload(None, True)
+            if isinstance(item, tuple):
+                return email.message_from_string(item[1]).get_payload(None, True)
 
         return False
 
