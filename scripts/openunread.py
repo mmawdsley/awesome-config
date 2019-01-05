@@ -27,10 +27,11 @@ class Open_Unread:
         self.browser = "/usr/bin/firefox"           # Browser execuable
         self.browser_args = []                      # List of browser arguments
         self.url_args = []                          # List of URL arguments
-        self.url_pattern = re.compile("URL: (.+)$") # Regexp for matching the URL
-        self.limit = None                           # Number of emails to open
-        self.max = 10                               # Emails to open per page
-        self.items = []                             # List of messages
+        self.url_pattern = re.compile("URL: (.+)", re.MULTILINE) # Regexp for matching the URL
+        self.limit = None    # Number of emails to open
+        self.max = 10        # Emails to open per page
+        self.rollover = True # Combine the last two pages if they're small enough
+        self.items = []      # List of messages
         self.pages = None
 
 
@@ -50,7 +51,7 @@ class Open_Unread:
         if sys.stdout.isatty():
             self.pages = [self.items[x:x+self.max] for x in xrange(0, len(self.items), self.max)]
 
-            if len(self.pages) >= 2 and len(self.pages[-1]) <= self.max / 2:
+            if self.should_rollover():
                 self.pages[-2] += self.pages[-1]
                 del self.pages[-1]
 
@@ -64,6 +65,12 @@ class Open_Unread:
 
             if sys.stdout.isatty() and len(self.pages) > 0 and self.continue_to_next_page() == False:
                 break
+
+    def should_rollover(self):
+        if self.rollover and len(self.pages) >= 2 and len(self.pages[-1]) <= self.max / 2:
+            return True
+
+        return False
 
     def get_continue_prompt(self):
         page_count = len(self.pages)
