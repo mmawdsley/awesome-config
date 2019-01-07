@@ -148,7 +148,7 @@ class Open_Unread:
             print "Exception: %s" % e
             return
 
-        type, data = self.connection.uid("SEARCH", None, "(UNDELETED) (UNSEEN)")
+        type, data = self.connection.uid("SEARCH", None, "(UNDELETED)")
 
         if type == "OK":
 
