@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Opens unread messages in a web browser."""
 
@@ -49,7 +49,7 @@ class Open_Unread:
             return
 
         if sys.stdout.isatty():
-            self.pages = [self.items[x:x+self.max] for x in xrange(0, len(self.items), self.max)]
+            self.pages = [self.items[x:x+self.max] for x in range(0, len(self.items), self.max)]
 
             if self.should_rollover():
                 self.pages[-2] += self.pages[-1]
@@ -87,7 +87,7 @@ class Open_Unread:
         """
 
         while True:
-            response = raw_input(self.get_continue_prompt())
+            response = input(self.get_continue_prompt())
 
             if response == "y":
                 return True
@@ -145,7 +145,7 @@ class Open_Unread:
         try:
             self.connect()
         except Exception as e:
-            print "Exception: %s" % e
+            print("Exception: %s" % e)
             return
 
         type, data = self.connection.uid("SEARCH", None, "(UNDELETED)")
@@ -153,19 +153,19 @@ class Open_Unread:
         if type == "OK":
 
             for uid in data[0].split():
-
+                uid = uid.decode("ISO-8859-1")
                 msg = self.get_message(uid)
 
                 if msg:
-                    url = self.get_url(msg)
+                    url = self.get_url(msg.decode("ISO-8859-1"))
 
                     if url:
                         self.items.append(Rss_Item(uid, url))
                     else:
-                        print "Could not find URL in message %s" % uid
+                        print("Could not find URL in message %s" % uid)
 
                 else:
-                    print "Could not parse message %s" % uid
+                    print("Could not parse message %s" % uid)
 
 
         self.disconnect()
@@ -187,7 +187,7 @@ class Open_Unread:
 
         for item in items:
             if isinstance(item, tuple):
-                return email.message_from_string(item[1]).get_payload(None, True)
+                return email.message_from_string(item[1].decode("ISO-8859-1")).get_payload(None, True)
 
         return False
 
@@ -210,7 +210,7 @@ class Open_Unread:
         try:
             self.connect()
         except Exception as e:
-            print "Exception: %s" % e
+            print("Exception: %s" % e)
             return
 
         for uid in uids:

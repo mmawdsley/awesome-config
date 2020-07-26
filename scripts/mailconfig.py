@@ -127,4 +127,4 @@ class Unread_Config (Mail_Config):
       pass
 
 if __name__ == "__main__":
-  print Unread_Config ().password
+  print(Unread_Config ().password)
