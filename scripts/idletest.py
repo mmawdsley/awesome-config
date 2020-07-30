@@ -8,27 +8,35 @@ import signal
 import threading
 
 class IdleTest(object):
-    def __init__(self, config):
+    def __init__(self, config, timeout=30):
         self.running = False
         self.config = config
+        self.timeout = timeout
+        self.count = {}
 
     def connect(self, mailbox):
         server = IMAPClient(self.config.hostname)
         server.login(self.config.username, self.config.password)
-        server.select_folder(mailbox)
+        server.select_folder(mailbox, readonly=True)
 
         return server
 
     def idle(self, mailbox):
         connection = self.connect(mailbox)
-        connection.idle()
+        self.update_count(connection, mailbox)
 
         while self.running:
-            responses = connection.idle_check(timeout=30)
-            print("Mailbox %s sent:" % mailbox, responses if responses else "nothing")
+            connection.idle()
+            connection.idle_check(timeout=self.timeout)
+            connection.idle_done()
 
-        connection.idle_done()
+            self.update_count(connection, mailbox)
+
         connection.logout()
+
+    def update_count(self, connection, mailbox):
+        status = connection.folder_status(mailbox, 'UNSEEN')
+        self.set_count(mailbox, status[b'UNSEEN'])
 
     def kill_handler(self, signal, frame):
         self.stop()
@@ -38,6 +46,10 @@ class IdleTest(object):
 
     def stop(self):
         self.running = False
+
+    def set_count(self, mailbox, count):
+        self.count[mailbox] = count
+        self.total = sum(self.count.values())
 
     def main(self):
         self.start()
