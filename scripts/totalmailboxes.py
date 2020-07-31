@@ -6,11 +6,12 @@ from time import sleep
 from threading import Thread
 
 class TotalMailboxes(object):
-    def __init__(self, config, timeout=30):
+    def __init__(self, config, timeout=30, include_read=False):
         self._running = False
         self._config = config
         self._timeout = timeout
         self._count = {}
+        self._status = 'MESSAGES' if include_read else 'UNSEEN'
         self.total = 0
 
     def _connect(self, mailbox):
@@ -34,8 +35,8 @@ class TotalMailboxes(object):
         connection.logout()
 
     def _update_count(self, connection, mailbox):
-        status = connection.folder_status(mailbox, 'UNSEEN')
-        self._set_count(mailbox, status[b'UNSEEN'])
+        status = connection.folder_status(mailbox, self._status)
+        self._set_count(mailbox, status[self._status.encode()])
 
     def start(self):
         self._running = True

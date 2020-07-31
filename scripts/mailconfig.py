@@ -67,13 +67,14 @@ class RSS_Config (Mail_Config):
 
     super (RSS_Config, self).read_config ()
 
-    self.config["mailbox"] = None
+    self.config["mailboxes"] = []
 
     if self.config_parser.has_section ("rss") == False:
       return
 
     try:
-      self.config["mailbox"] = self.config_parser.get ("rss", "mailbox")
+      for mailbox in self.config_parser.get ("unread", "mailboxes").split (","):
+        self.config["mailboxes"].append (mailbox.strip ())
     except:
       pass
 
@@ -90,13 +91,14 @@ class Twitter_Config (Mail_Config):
 
     super (Twitter_Config, self).read_config ()
 
-    self.config["mailbox"] = None
+    self.config["mailboxes"] = []
 
     if self.config_parser.has_section ("twitter") == False:
       return
 
     try:
-      self.config["mailbox"] = self.config_parser.get ("twitter", "mailbox")
+      for mailbox in self.config_parser.get ("twitter", "mailboxes").split (","):
+        self.config["mailboxes"].append (mailbox.strip ())
     except:
       pass
 
@@ -119,10 +121,8 @@ class Unread_Config (Mail_Config):
       return
 
     try:
-
       for mailbox in self.config_parser.get ("unread", "mailboxes").split (","):
         self.config["mailboxes"].append (mailbox.strip ())
-
     except:
       pass
 
