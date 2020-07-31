@@ -9,66 +9,70 @@ import imaplib
 import re
 import signal
 from mailconfig import Unread_Config
+from totalmailboxes import TotalMailboxes
+from threading import Thread
+from time import sleep
 
 class UnreadBadge(object):
-    def __init__(self, config, desktop_id, delay=60):
-        self.config = config
-        self.delay = delay
-        self.launcher = Unity.LauncherEntry.get_for_desktop_id(desktop_id)
-        self.main_loop = None
-        self.running = False
-        self.unread_pattern = re.compile("\(UNSEEN (\d+)\)$")
+    def __init__(self, total_mailboxes, desktop_id, delay=5):
+        self._total_mailboxes = total_mailboxes
+        self._delay = delay
+        self._launcher = Unity.LauncherEntry.get_for_desktop_id(desktop_id)
+        self._main_loop = None
+        self._threads = []
+        self._running = False
+        self._unread_pattern = re.compile("\(UNSEEN (\d+)\)$")
+        self._count = 0
 
     def start(self):
-        signal.signal(signal.SIGINT, self.kill_handler)
-        signal.signal(signal.SIGTERM, self.kill_handler)
+        signal.signal(signal.SIGINT, self._kill_handler)
+        signal.signal(signal.SIGTERM, self._kill_handler)
 
-        self.main_loop = GObject.MainLoop()
+        self._running = True
+        self._threads.append(Thread(target=self._main))
+        self._threads.append(Thread(target=self._total))
 
-        self.running = True
-        self.main()
+        for thread in self._threads:
+            thread.start()
 
-    def main(self):
-        GObject.timeout_add_seconds(self.delay, self.update_count)
+        while self._running:
+            sleep(1)
 
-        try:
-            self.main_loop.run()
-        except (KeyboardInterrupt, SystemExit):
-            self.running = False
+        self._main_loop.quit()
+
+        for thread in self._threads:
+            thread.join()
 
     def stop(self):
-        self.main_loop.quit()
+        self._running = False
+        self._total_mailboxes.stop()
 
-    def kill_handler(self, signal, frame):
-        self.running = False
+    def _main(self):
+        GObject.timeout_add_seconds(self._delay, self._update_launcher)
 
-    def update_count(self):
-        count = self.get_count()
+        self._main_loop = GObject.MainLoop()
+        self._main_loop.run()
 
-        self.launcher.props.count = count
-        self.launcher.props.count_visible = count > 0
+    def _total(self):
+        self._total_mailboxes.start()
 
-        return self.running
+        while self._running:
+            sleep(1)
 
-    def get_count(self):
-        unread = 0
+        self.stop()
 
-        connection = imaplib.IMAP4_SSL(self.config.hostname, self.config.port)
-        connection.login(self.config.username, self.config.password)
+    def _kill_handler(self, signal, frame):
+        self.stop()
 
-        for mailbox in self.config.mailboxes:
-            status, counts = connection.status('"%s"' % mailbox, "(UNSEEN)")
-            search = self.unread_pattern.search(counts[0].decode("ISO-8859-1"))
+    def _update_launcher(self):
+        count = self._total_mailboxes.total
 
-            if not search:
-                continue
+        self._launcher.props.count = count
+        self._launcher.props.count_visible = count > 0
 
-            unread += int(search.group (1))
-
-        connection.logout()
-
-        return unread
+        return self._running
 
 if __name__ == "__main__":
     config = Unread_Config()
-    UnreadBadge(config, "thunderbird.desktop").start()
+    total_mailboxes = TotalMailboxes(config)
+    UnreadBadge(total_mailboxes, "thunderbird.desktop").start()
