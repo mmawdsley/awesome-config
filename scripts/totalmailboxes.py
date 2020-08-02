@@ -11,7 +11,7 @@ class TotalMailboxes(object):
         self._config = config
         self._timeout = timeout
         self._count = {}
-        self._status = 'MESSAGES' if include_read else 'UNSEEN'
+        self._status = 'UNDELETED' if include_read else 'UNSEEN'
         self.total = 0
 
     def _connect(self, mailbox):
@@ -35,8 +35,8 @@ class TotalMailboxes(object):
         connection.logout()
 
     def _update_count(self, connection, mailbox):
-        status = connection.folder_status(mailbox, self._status)
-        self._set_count(mailbox, status[self._status.encode()])
+        message_ids = connection.search('UNDELETED')
+        self._set_count(mailbox, len(message_ids))
 
     def start(self):
         self._running = True
