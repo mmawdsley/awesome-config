@@ -6,5 +6,4 @@ import mailconfig
 
 if __name__ == "__main__":
     config = mailconfig.Twitter_Config()
-    openUnread = Open_Unread(config)
-    openUnread.open()
+    Open_Unread(config).open(config.mailboxes[0])

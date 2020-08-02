@@ -35,7 +35,7 @@ class Open_Unread:
         self.pages = None
 
 
-    def open(self):
+    def open(self, mailbox):
         """Connects to the mail server and opens the messages."""
 
         try:
@@ -43,7 +43,7 @@ class Open_Unread:
         except(IndexError, ValueError):
             pass
 
-        self.get_messages()
+        self.get_messages(mailbox)
 
         if len(self.items) == 0:
             return
@@ -61,7 +61,7 @@ class Open_Unread:
         while len(self.pages) > 0:
 
             page = self.pages.pop(0)
-            self.open_messages(page)
+            self.open_messages(page, mailbox)
 
             if sys.stdout.isatty() and len(self.pages) > 0 and self.continue_to_next_page() == False:
                 break
@@ -95,7 +95,7 @@ class Open_Unread:
             if response == "n":
                 return False
 
-    def connect(self):
+    def connect(self, mailbox):
         """Connects to the IMAP server and opens the mailbox."""
 
         type = None                                 # Return value
@@ -108,15 +108,15 @@ class Open_Unread:
             raise Exception("Connection failed")
 
         try:
-            type = self.connection.select(self.config.mailbox, False)[0]
+            type = self.connection.select(mailbox, False)[0]
         except Exception as e:
             raise Exception("Mailbox selection threw an exception: %s" % e)
 
         if type != "OK":
-            raise Exception('Could not select mailbox "%s"' % self.config.mailbox)
+            raise Exception('Could not select mailbox "%s"' % mailbox)
 
 
-    def open_messages(self, messages):
+    def open_messages(self, messages, mailbox):
         """Opens the feed items."""
 
         uids = None                                 # List of UIDs
@@ -131,10 +131,10 @@ class Open_Unread:
             cmd += self.url_args + [url]
 
         if subprocess.call(cmd) == 0:
-            self.delete_messages(uids)
+            self.delete_messages(uids, mailbox)
 
 
-    def get_messages(self):
+    def get_messages(self, mailbox):
         """Fetches the messages in the selected mailbox."""
 
         type = None                                 # Return value
@@ -143,7 +143,7 @@ class Open_Unread:
         self.items = []
 
         try:
-            self.connect()
+            self.connect(mailbox)
         except Exception as e:
             print("Exception: %s" % e)
             return
@@ -204,11 +204,11 @@ class Open_Unread:
             return False
 
 
-    def delete_messages(self, uids):
+    def delete_messages(self, uids, mailbox):
         """Marks the given messages for deletion."""
 
         try:
-            self.connect()
+            self.connect(mailbox)
         except Exception as e:
             print("Exception: %s" % e)
             return
