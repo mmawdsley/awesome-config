@@ -27,7 +27,7 @@ class TotalMailboxes(object):
 
         while self._running:
             connection.idle()
-            connection.idle_check(timeout=self._timeout)
+            connection.idle_check(timeout=self._timeout*60)
             connection.idle_done()
 
             self._update_count(connection, mailbox)
