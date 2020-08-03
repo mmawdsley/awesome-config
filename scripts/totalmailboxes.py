@@ -21,6 +21,13 @@ class TotalMailboxes(object):
 
         return server
 
+    def _idle_wrapper(self, mailbox):
+        while self._running:
+            try:
+                self._idle(mailbox)
+            except ConnectionResetError:
+                print("Caught ConnectionResetError")
+
     def _idle(self, mailbox):
         connection = self._connect(mailbox)
         self._update_count(connection, mailbox)
@@ -51,7 +58,7 @@ class TotalMailboxes(object):
         threads = []
 
         for mailbox in self._config.mailboxes:
-            thread = Thread(target=self._idle, args=(mailbox,))
+            thread = Thread(target=self._idle_wrapper, args=(mailbox,))
             thread.start()
             threads.append(thread)
 
