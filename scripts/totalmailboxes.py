@@ -25,8 +25,8 @@ class TotalMailboxes(object):
         while self._running:
             try:
                 self._idle(mailbox)
-            except ConnectionResetError:
-                print("Caught ConnectionResetError")
+            except (ConnectionResetError, TimeoutError) as err:
+                print("Caught {0}".format(err))
 
     def _idle(self, mailbox):
         connection = self._connect(mailbox)
