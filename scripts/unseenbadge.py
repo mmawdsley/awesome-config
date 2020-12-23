@@ -8,13 +8,15 @@ from gi.repository import Unity
 import imaplib
 import re
 import signal
+from math import ceil
 from threading import Thread
 from time import sleep
 
 class UnseenBadge(object):
-    def __init__(self, total_mailboxes, desktop_id, delay=5):
+    def __init__(self, total_mailboxes, desktop_id, delay=5, per_page=None):
         self._total_mailboxes = total_mailboxes
         self._delay = delay
+        self._per_page = per_page
         self._launcher = Unity.LauncherEntry.get_for_desktop_id(desktop_id)
         self._main_loop = None
         self._threads = []
@@ -67,7 +69,12 @@ class UnseenBadge(object):
         self.stop()
 
     def _update_launcher(self):
-        label = count = self._total_mailboxes.total
+        total = self._total_mailboxes.total
+
+        if self._per_page:
+            total = ceil(total / self._per_page)
+
+        label = count = total
 
         self._launcher.props.count = count
         self._launcher.props.count_visible = count > 0
