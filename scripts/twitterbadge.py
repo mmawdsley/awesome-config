@@ -8,4 +8,4 @@ from unseenbadge import UnseenBadge
 if __name__ == "__main__":
     config = Twitter_Config()
     total_mailboxes = TotalMailboxes(config, include_read=True)
-    UnseenBadge(total_mailboxes, "opentwitter.desktop", per_page=10).start()
+    UnseenBadge(total_mailboxes, "opentwitter.desktop").start()
