@@ -7,6 +7,5 @@ from unseenbadge import UnseenBadge
 
 if __name__ == "__main__":
     config = RSS_Config()
-    print(config)
     total_mailboxes = TotalMailboxes(config, include_read=True)
     UnseenBadge(total_mailboxes, "openrss.desktop").start()
