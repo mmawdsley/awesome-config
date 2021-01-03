@@ -3,7 +3,6 @@
 hostname = hostname
 port = 993
 username = username
-password = supersecretpassword
 
 [rss]
 
