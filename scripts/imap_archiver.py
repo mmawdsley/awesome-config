@@ -10,7 +10,7 @@ import itertools
 class ImapArchiver(object):
     """Archives old messages in IMAP mailboxes."""
 
-    def __init__(self, connection, max_age=365, max_messages=50, archive_mailbox_name="INBOX.Archives"):
+    def __init__(self, connection, max_age=365, max_messages=50, archive_mailbox_name="Archives"):
         self.connection = connection
         self.max_age = max_age
         self.max_messages = max_messages
