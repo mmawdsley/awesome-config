@@ -35,7 +35,7 @@ class ImapArchiver(object):
             messages = list(filter(lambda x: x["age"] > self.max_age, messages))
 
             for archive_mailbox, messages in itertools.groupby(messages, key=lambda x:x["mailbox"]):
-                message_uid_row = [str(message["uid"]) for message in messages]
+                message_uid_row = [message["uid"] for message in messages]
                 self.archive_messages(message_uid_row, mailbox, archive_mailbox)
 
     def archive_messages(self, message_uids, mailbox, archive_mailbox):
@@ -46,12 +46,31 @@ class ImapArchiver(object):
         except ValueError:
             self.create_archive_mailbox(archive_mailbox)
 
-        message_set = ",".join(message_uids)
+        message_set = self.build_message_set(message_uids)
 
         type, data = self.connection.uid("move", message_set, self.quote_mailbox(archive_mailbox))
 
         if type != "OK":
             raise Exception("Failed to move %d messages from %s to %s" % (len(messages), mailbox, archive_mailbox))
+
+    def build_message_set(self, message_uids):
+        """Compress the message UIDs into sets"""
+
+        sets = []
+        set = None
+
+        for message_uid in message_uids:
+            if set is None:
+                set = [message_uid]
+            elif set and set[-1] == message_uid - 1:
+                set.append(message_uid)
+            else:
+                sets.append(set)
+                set = [message_uid]
+
+        sets.append(set)
+
+        return ",".join(map(lambda x: "%s:%s" % (x[0], x[-1]) if len(x) > 1 else str(x[0]), sets))
 
     def build_archive_mailbox(self, date, mailbox):
         """Build the name of the archive mailbox"""
