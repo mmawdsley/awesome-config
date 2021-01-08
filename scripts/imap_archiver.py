@@ -47,7 +47,7 @@ class ImapArchiver(object):
         type, data = self.connection.uid("move", message_set, archive_mailbox)
 
         if type != "OK":
-            raise Exception("Failed to move %d messages from %s to %s" % (len(messages), mailbox, archive_mailbox))
+            raise Exception("Failed to move messages from %s to %s" % (mailbox, archive_mailbox))
 
     def build_archive_mailbox(self, date, mailbox):
         """Build the name of the archive mailbox"""
