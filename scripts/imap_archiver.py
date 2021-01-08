@@ -51,7 +51,7 @@ class ImapArchiver(object):
         type, data = self.connection.uid("move", message_set, self.quote_mailbox(archive_mailbox))
 
         if type != "OK":
-            raise Exception("Failed to move %d messages from %s to %s" % (len(messages), mailbox, archive_mailbox))
+            raise Exception("Failed to move messages from %s to %s" % (mailbox, archive_mailbox))
 
     def build_message_set(self, message_uids):
         """Compress the message UIDs into sets"""
@@ -151,8 +151,12 @@ class ImapArchiver(object):
         status, mailboxes = self.connection.list(pattern)
 
         for mailbox in mailboxes:
-            mailbox_name = mailbox.decode().split(' "." ')[1]
-            mailbox_names.append(mailbox_name)
+            flags, mailbox_name = mailbox.decode().split(' "." ')
+
+            # Mailboxes with the "Noselect" flag cannot be used
+            if "Noselect" not in flags:
+                mailbox_name = mailbox_name.strip("\"")
+                mailbox_names.append(mailbox_name)
 
         return mailbox_names
 
