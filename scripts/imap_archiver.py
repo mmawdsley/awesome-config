@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import argparse
 import datetime
 import imaplib
 import mailconfig
@@ -173,6 +174,7 @@ class ImapArchiver(object):
         return mailbox_names
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
     config = mailconfig.Mail_Config()
     mailboxes = [
         "INBOX",
@@ -183,13 +185,16 @@ if __name__ == "__main__":
         "Sent"
     ]
 
+    parser.add_argument("--dry-run", help="Perform dry-run", action="store_true")
+    args = parser.parse_args()
+
     try:
         connection = imaplib.IMAP4_SSL(config.hostname)
         connection.login(config.username, config.password)
     except:
         raise Exception("Connection failed")
 
-    archiver = ImapArchiver(connection)
+    archiver = ImapArchiver(connection, dry_run=args.dry_run)
 
     for mailbox in mailboxes:
         archiver.archive_mailbox(mailbox)
