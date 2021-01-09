@@ -10,7 +10,7 @@ import itertools
 class ImapArchiver(object):
     """Archives old messages in IMAP mailboxes."""
 
-    def __init__(self, connection, max_age=365, max_messages=50, archive_mailbox_name="Archives"):
+    def __init__(self, connection, max_age=365, max_messages=50, archive_mailbox_name="Archives", dry_run=False):
         self.connection = connection
         self.max_age = max_age
         self.max_messages = max_messages
@@ -18,6 +18,7 @@ class ImapArchiver(object):
         self.archive_mailboxes = self.get_mailboxes_matching(self.archive_mailbox_name)
         self.pattern = re.compile('^[0-9]+ \(UID ([0-9]+) INTERNALDATE "([0-9]+-[a-zA-Z]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+ [-\+][0-9]+)')
         self.now = datetime.datetime.now(datetime.timezone.utc)
+        self.dry_run = dry_run
 
     def archive_mailbox(self, mailbox):
         """Archive any messages older than max_age in the given mailbox."""
@@ -45,12 +46,15 @@ class ImapArchiver(object):
         except ValueError:
             self.create_archive_mailbox(archive_mailbox)
 
+        print("Archiving %d message(s) from %s to %s" % (len(message_uids), mailbox, archive_mailbox))
+
         message_set = self.build_message_set(message_uids)
 
-        type, data = self.connection.uid("move", message_set, self.quote_mailbox(archive_mailbox))
+        if not self.dry_run:
+            type, data = self.connection.uid("move", message_set, self.quote_mailbox(archive_mailbox))
 
-        if type != "OK":
-            raise Exception("Failed to move messages from %s to %s" % (mailbox, archive_mailbox))
+            if type != "OK":
+                raise Exception("Failed to move messages from %s to %s" % (mailbox, archive_mailbox))
 
     def build_message_set(self, message_uids):
         """Compress the message UIDs into sets"""
@@ -80,7 +84,11 @@ class ImapArchiver(object):
     def create_archive_mailbox(self, mailbox_name):
         """Create the archive mailbox and add it to the list"""
 
-        self.connection.create(self.quote_mailbox(mailbox_name))
+        print("Creating new archive mailbox %s" % mailbox_name)
+
+        if not self.dry_run:
+            self.connection.create(self.quote_mailbox(mailbox_name))
+
         self.archive_mailboxes.append(mailbox_name)
 
     def select_mailbox(self, mailbox):
