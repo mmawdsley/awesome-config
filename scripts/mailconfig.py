@@ -6,10 +6,11 @@ import keyring
 import os
 
 class Mail_Config (object):
-    def __init__ (self):
+    def __init__ (self, section):
         self.config_path = os.path.expanduser ("~/.mailconfig")
         self.config_parser = None
         self.config = None
+        self.section = section
 
     def __getattr__ (self, name):
         """Returns values from the configuration"""
@@ -29,26 +30,51 @@ class Mail_Config (object):
             "hostname" : None,
             "port" : None,
             "username" : None,
-            "password" : None
+            "password" : None,
+            "mailboxes" : [],
+            "archive" : []
         }
 
         self.config_parser = configparser.ConfigParser ()
         self.config_parser.read (self.config_path)
+        self.load_section("main")
 
-        if self.config_parser.has_section ("main") == False:
-            raise Exception ("No [main] section defined")
-
-        try:
-            self.config["hostname"] = self.config_parser.get ("main", "hostname")
-            self.config["port"] = self.config_parser.getint ("main", "port")
-            self.config["username"] = self.config_parser.get ("main", "username")
-        except configparser.NoOptionError as err:
-            raise Exception ('Mail not configured "%s"' % err)
-
-        self.config["password"] = keyring.get_password ("mailconfig", "password")
+        if self.section != "main":
+            self.load_section(self.section)
 
         if self.config["password"] is None:
             raise Exception ("No password set for host %s" % self.config["hostname"])
+
+    def load_section (self, section):
+        """Fetches the configuration values from the current section"""
+
+        if self.config_parser.has_section (section) == False:
+            raise Exception ("No [%s] section defined" % section)
+
+        try:
+            self.config["hostname"] = self.config_parser.get (section, "hostname")
+            self.config["port"] = self.config_parser.getint (section, "port")
+            self.config["username"] = self.config_parser.get (section, "username")
+        except configparser.NoOptionError as err:
+            raise Exception ('Mail not configured "%s"' % err)
+
+        self.config["mailboxes"] = self.parse_list(section, "mailboxes")
+        self.config["mailboxes"] = self.parse_list(section, "archive")
+        self.config["password"] = keyring.get_password ("mailconfig", "password.%s" % section)
+
+    def parse_list (self, section, name):
+        """Returns a comma-separated value from the config as a list"""
+
+        value = []
+
+        try:
+            for mailbox in self.config_parser.get (section, name).split (","):
+                value.append (mailbox.strip ())
+        except configparser.NoOptionError as err:
+            pass
+
+        return value
+
 
 class RSS_Config (Mail_Config):
     def __init__ (self):

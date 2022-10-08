@@ -175,18 +175,11 @@ class ImapArchiver(object):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    config = mailconfig.Mail_Config()
-    mailboxes = [
-        "INBOX",
-        "INBOX.Lists",
-        "INBOX.Podcasts",
-        "INBOX.Shopping",
-        "INBOX.Work",
-        "Sent"
-    ]
-
+    parser.add_argument("name", help="Mail config name", default="main", nargs="?")
     parser.add_argument("--dry-run", help="Perform dry-run", action="store_true")
     args = parser.parse_args()
+
+    config = mailconfig.Mail_Config(args.name)
 
     try:
         connection = imaplib.IMAP4_SSL(config.hostname)
@@ -196,5 +189,5 @@ if __name__ == "__main__":
 
     archiver = ImapArchiver(connection, dry_run=args.dry_run)
 
-    for mailbox in mailboxes:
+    for mailbox in config.archive:
         archiver.archive_mailbox(mailbox)
