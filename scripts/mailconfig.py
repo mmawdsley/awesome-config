@@ -6,7 +6,7 @@ import keyring
 import os
 
 class Mail_Config (object):
-    def __init__ (self, section):
+    def __init__ (self, section = "main"):
         self.config_path = os.path.expanduser ("~/.mailconfig")
         self.config_parser = None
         self.config = None
