@@ -59,7 +59,7 @@ class Mail_Config (object):
             raise Exception ('Mail not configured "%s"' % err)
 
         self.config["mailboxes"] = self.parse_list(section, "mailboxes")
-        self.config["mailboxes"] = self.parse_list(section, "archive")
+        self.config["archive"] = self.parse_list(section, "archive")
         self.config["password"] = keyring.get_password ("mailconfig", "password.%s" % section)
 
     def parse_list (self, section, name):
