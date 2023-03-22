@@ -7,6 +7,7 @@ import imaplib
 import re
 import subprocess
 import sys
+import time
 
 class Rss_Item(object):
     """Structure to represent an item in the RSS feed."""
@@ -35,7 +36,7 @@ class Open_Unread:
         self.pages = None
 
 
-    def open(self, mailbox):
+    def open(self, mailbox, stagger=False):
         """Connects to the mail server and opens the messages."""
 
         try:
@@ -46,6 +47,12 @@ class Open_Unread:
         self.get_messages(mailbox)
 
         if len(self.items) == 0:
+            return
+
+        if stagger:
+            for item in self.items:
+                self.open_messages([item], mailbox)
+                time.sleep(4)
             return
 
         if sys.stdout.isatty():
