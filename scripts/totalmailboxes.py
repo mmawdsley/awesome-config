@@ -4,6 +4,8 @@
 from imapclient import IMAPClient
 from time import sleep
 from threading import Thread
+import imaplib
+import sys
 
 class TotalMailboxes(object):
     def __init__(self, config, timeout=30, include_read=False):
@@ -25,8 +27,13 @@ class TotalMailboxes(object):
         while self._running:
             try:
                 self._idle(mailbox)
-            except (ConnectionResetError, TimeoutError) as err:
+            except (ConnectionResetError, TimeoutError, imaplib.IMAP4.abort) as err:
                 print("Caught {0}".format(err))
+            except Exception as err:
+                print("Caught exception {0}".format(err))
+            except:
+                err = sys.exc_info()[0]
+                print("Caught something else {0}".format(err))
 
     def _idle(self, mailbox):
         connection = self._connect(mailbox)
