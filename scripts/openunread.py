@@ -52,7 +52,7 @@ class Open_Unread:
         if stagger:
             for item in self.items:
                 self.open_messages([item], mailbox)
-                time.sleep(4)
+                time.sleep(5)
             return
 
         if sys.stdout.isatty():
