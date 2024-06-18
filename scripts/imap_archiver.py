@@ -17,7 +17,7 @@ class ImapArchiver(object):
         self.max_messages = max_messages
         self.archive_mailbox_name = archive_mailbox_name
         self.archive_mailboxes = self.get_mailboxes_matching(self.archive_mailbox_name)
-        self.pattern = re.compile('^[0-9]+ \(UID ([0-9]+) INTERNALDATE "([0-9]+-[a-zA-Z]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+ [-\+][0-9]+)')
+        self.pattern = re.compile('^[0-9]+ \\(UID ([0-9]+) INTERNALDATE "([0-9]+-[a-zA-Z]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+ [-\\+][0-9]+)')
         self.now = datetime.datetime.now(datetime.timezone.utc)
         self.dry_run = dry_run
 
